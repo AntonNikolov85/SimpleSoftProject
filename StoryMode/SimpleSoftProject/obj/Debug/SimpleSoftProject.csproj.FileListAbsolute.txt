@@ -1,0 +1,6 @@
+E:\Computer Staff\SoftUni\SimpleSoftProject\StoryMode\SimpleSoftProject\bin\Debug\SimpleSoftProject.exe.config
+E:\Computer Staff\SoftUni\SimpleSoftProject\StoryMode\SimpleSoftProject\bin\Debug\SimpleSoftProject.exe
+E:\Computer Staff\SoftUni\SimpleSoftProject\StoryMode\SimpleSoftProject\bin\Debug\SimpleSoftProject.pdb
+E:\Computer Staff\SoftUni\SimpleSoftProject\StoryMode\SimpleSoftProject\obj\Debug\SimpleSoftProject.csprojResolveAssemblyReference.cache
+E:\Computer Staff\SoftUni\SimpleSoftProject\StoryMode\SimpleSoftProject\obj\Debug\SimpleSoftProject.exe
+E:\Computer Staff\SoftUni\SimpleSoftProject\StoryMode\SimpleSoftProject\obj\Debug\SimpleSoftProject.pdb
