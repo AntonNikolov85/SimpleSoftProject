@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text.RegularExpressions;
 using SimpleSoftProject.IO;
 using SimpleSoftProject.StaticData;
 
@@ -11,13 +13,13 @@ namespace SimpleSoftProject.Repository
 
         private static Dictionary<string, Dictionary<string, List<int>>> studentsByCourse;
 
-        public static void InitializeData()
+        public static void InitializeData(string fileName)
         {
             if (!isDataInitialized)
             {
                 OutputWriter.WriteMessageOnNewLine("Reading data...");
                 studentsByCourse = new Dictionary<string, Dictionary<string, List<int>>>();
-                ReadData();
+                ReadData(fileName);
             }
             else
             {
@@ -25,33 +27,50 @@ namespace SimpleSoftProject.Repository
             }
         }
 
-        private static void ReadData()
+        private static void ReadData(string fileName)
         {
-            string input = Console.ReadLine();
+            string path = SessionData.currentPath + "\\" + fileName;
 
-            while (!string.IsNullOrEmpty(input))
+            if (File.Exists(path))
             {
-                string[] tokens = input.Split(' ');
-                string course = tokens[0];
-                string student = tokens[1];
-                int mark = int.Parse(tokens[2]);
+                string pattern = @"([A-Z][a-zA-Z#+]*_[A-Z][a-z]{2}_\d{4})\s+([A-Z][a-z]{0,3}\d{2}_\d{2,4})\s+(\d+)";
+                Regex rgx = new Regex(pattern);
+                string[] allInputLines = File.ReadAllLines(path);
 
-                if (!studentsByCourse.ContainsKey(course))
+                for (int line = 0; line < allInputLines.Length; line++)
                 {
-                    studentsByCourse.Add(course, new Dictionary<string, List<int>>());
+                    if (!string.IsNullOrEmpty(allInputLines[line]) && rgx.IsMatch(allInputLines[line]))
+                    {
+                        Match currentMatch = rgx.Match(allInputLines[line]);
+                        string courseName = currentMatch.Groups[1].Value;
+                        string username = currentMatch.Groups[2].Value;
+                        int studentScoreOnTask;
+                        bool hasParsedScore = int.TryParse(currentMatch.Groups[3].Value, out studentScoreOnTask);
+
+                        if (hasParsedScore && studentScoreOnTask >= 0 && studentScoreOnTask <= 100)
+                        {
+                            if (!studentsByCourse.ContainsKey(courseName))
+                            {
+                                studentsByCourse.Add(courseName, new Dictionary<string, List<int>>());
+                            }
+
+                            if (!studentsByCourse[courseName].ContainsKey(username))
+                            {
+                                studentsByCourse[courseName].Add(username, new List<int>());
+                            }
+
+                            studentsByCourse[courseName][username].Add(studentScoreOnTask);
+                        }
+                    }
                 }
 
-                if (!studentsByCourse[course].ContainsKey(student))
-                {
-                    studentsByCourse[course].Add(student, new List<int>());
-                }
-
-                studentsByCourse[course][student].Add(mark);
-                input = Console.ReadLine();
+                isDataInitialized = true;
+                OutputWriter.WriteMessageOnNewLine("Data read!");
             }
-
-            isDataInitialized = true;
-            OutputWriter.WriteMessageOnNewLine("Data read!");
+            else
+            {
+                OutputWriter.DisplayException(ExceptionMessages.InvalidPath);
+            }
         }
 
         public static void GetStudentScoresFromCourse(string courseName, string username)

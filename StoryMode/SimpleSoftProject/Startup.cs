@@ -13,6 +13,7 @@ namespace SimpleSoftProject
             StudentsRepository.GetAllStudentsFromCourse("Unity");*/
             //Tester.CompareContent(@"E:\Computer Staff\SoftUni\Labs\AdvancedLab\test2.txt", @"E:\Computer Staff\SoftUni\Labs\AdvancedLab\test3.txt");
             //IOManager.TraverseDirectory(0);
+            InputReader.StartReadingCommands();
         }
     }
 }
