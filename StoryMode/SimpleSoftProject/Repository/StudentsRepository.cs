@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using SimpleSoftProject.IO;
 using SimpleSoftProject.StaticData;
+using SimpleSoftProject.Repository;
 
 namespace SimpleSoftProject.Repository
 {
@@ -12,6 +13,8 @@ namespace SimpleSoftProject.Repository
         public static bool isDataInitialized = false;
 
         private static Dictionary<string, Dictionary<string, List<int>>> studentsByCourse;
+
+        public static object RepositioryFilters { get; private set; }
 
         public static void InitializeData(string fileName)
         {
@@ -90,6 +93,32 @@ namespace SimpleSoftProject.Repository
                 {
                     OutputWriter.PrintStudent(studentMarksEntry);
                 }
+            }
+        }
+
+        public static void OrderAndTake(string courseName, string comparison, int? studentsToTake = null)
+        {
+            if (IsQueryForCoursePossible(courseName))
+            {
+                if (studentsToTake == null)
+                {
+                    studentsToTake = studentsByCourse[courseName].Count;
+                }
+
+                RepositorySorters.OrderAndTake(studentsByCourse[courseName], comparison, studentsToTake.Value);
+            }
+        }
+
+        public static void FilterAndTake(string courseName, string givenFilter, int? studentsToTake = null)
+        {
+            if (IsQueryForCoursePossible(courseName))
+            {
+                if (studentsToTake == null)
+                {
+                    studentsToTake = studentsByCourse[courseName].Count;
+                }
+
+                RepositoryFilters.FilterAndTake(studentsByCourse[courseName], givenFilter, studentsToTake.Value);
             }
         }
 

@@ -48,6 +48,8 @@
     <Compile Include="IO\IOManager.cs" />
     <Compile Include="IO\OutputWriter.cs" />
     <Compile Include="Judge\Tester.cs" />
+    <Compile Include="Repository\RepositoryFilters.cs" />
+    <Compile Include="Repository\RepositorySorters.cs" />
     <Compile Include="Repository\StudentsRepository.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

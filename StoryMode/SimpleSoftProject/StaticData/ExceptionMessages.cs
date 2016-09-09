@@ -13,5 +13,10 @@ namespace SimpleSoftProject.StaticData
         public const string ComparisonOfFilesWithDifferentSizes = "Files not of equal size, certain mismatch.";
         public const string ForbiddenSymbolsContainedInName = "The given name contains symbols that are not allowed to be used in names of files or folders.";
         public const string InvalidDestination = "You are unable to go higher in the hierarchy of the current partition.";
+        public const string InvalidStudentsFilter = "The given filter is not one of the following: excellent/average/poor";
+        public const string InvalidComparisonQuery = "The comparison query you want, does not exist in the context of the current program!";
+        public const string InvalidTakeQuantityParameter = "The quantity you are trying to take is an invalid parameter!";
+        public const string InvalidTakeCommand = "The take command expected does not match the format wanted!";
+
     }
 }
