@@ -2,14 +2,28 @@
 using System.Diagnostics;
 using System.Text;
 using SimpleSoftProject.Judge;
+using SimpleSoftProject.Network;
 using SimpleSoftProject.Repository;
 using SimpleSoftProject.StaticData;
 
 namespace SimpleSoftProject.IO
 {
-    public static class CommandInterpreter
+    public class CommandInterpreter
     {
-        public static void InterpredCommand(string input)
+        private Tester judge;
+        private StudentsRepository repository;
+        private DownloadManager downloadManager;
+        private IOManager inputOutputManager;
+
+        public CommandInterpreter(Tester judge, StudentsRepository repository, DownloadManager downloadManager, IOManager inputOutputManager)
+        {
+            this.judge = judge;
+            this.repository = repository;
+            this.downloadManager = downloadManager;
+            this.inputOutputManager = inputOutputManager;
+        }
+
+        public void InterpredCommand(string input)
         {
             string[] data = input.Split(' ');
             string command = data[0];
@@ -49,24 +63,33 @@ namespace SimpleSoftProject.IO
                 case "order":
                     TryOrderAndTake(input, data);
                     break;
+                case "dropdb":
+                    TryDropDb(input, data);
+                    break;
+                case "download":
+                    TryDownloadRequestedFile(input, data);
+                    break;
+                case "downloadasynch":
+                    TryDownloadRequestedFileAsync(input, data);
+                    break;
                 default:
                     DisplayInvalidCommandMessage(input);
                     break;
             }
         }
 
-        private static void TryShowWantedData(string input, string[] data)
+        private void TryShowWantedData(string input, string[] data)
         {
             if (data.Length == 2)
             {
                 string courseName = data[1];
-                StudentsRepository.GetAllStudentsFromCourse(courseName);
+                this.repository.GetAllStudentsFromCourse(courseName);
             }
             else if (data.Length == 3)
             {
                 string courseName = data[1];
                 string userName = data[2];
-                StudentsRepository.GetStudentScoresFromCourse(courseName, userName);
+                this.repository.GetStudentScoresFromCourse(courseName, userName);
             }
             else
             {
@@ -74,7 +97,7 @@ namespace SimpleSoftProject.IO
             }
         }
 
-        private static void TryOpenFile(string input, string[] data)
+        private void TryOpenFile(string input, string[] data)
         {
             if (data.Length == 2)
             {
@@ -87,12 +110,12 @@ namespace SimpleSoftProject.IO
             }
         }
 
-        private static void TryCreateDirectory(string input , string[] data )
+        private void TryCreateDirectory(string input , string[] data )
         {
             if (data.Length == 2)
             {
                 string folderName = data[1];
-                IOManager.CreateDirectoryInCurrentFolder(folderName);
+                this.inputOutputManager.CreateDirectoryInCurrentFolder(folderName);
             }
             else
             {
@@ -100,11 +123,11 @@ namespace SimpleSoftProject.IO
             }
         }
 
-        private static void TryTraverseFolders(string input, string[] data)
+        private void TryTraverseFolders(string input, string[] data)
         {
             if (data.Length == 1)
             {
-                IOManager.TraverseDirectory(0);
+                this.inputOutputManager.TraverseDirectory(0);
             }
             else if (data.Length == 2)
             {
@@ -112,7 +135,7 @@ namespace SimpleSoftProject.IO
                 bool hasParsed = int.TryParse(data[1], out depth);
                 if (hasParsed)
                 {
-                    IOManager.TraverseDirectory(depth);
+                    this.inputOutputManager.TraverseDirectory(depth);
                 }
                 else
                 {
@@ -125,14 +148,14 @@ namespace SimpleSoftProject.IO
             }
         }
 
-        private static void TryCompareFiles(string input, string[] data)
+        private void TryCompareFiles(string input, string[] data)
         {
             if (data.Length == 3)
             {
                 string firstPath = data[1];
                 string secondPath = data[2];
 
-                Tester.CompareContent(firstPath, secondPath);
+                this.judge.CompareContent(firstPath, secondPath);
             }
             else
             {
@@ -140,12 +163,12 @@ namespace SimpleSoftProject.IO
             }
         }
 
-        private static void TryChangePathRelatively(string input, string[] data)
+        private void TryChangePathRelatively(string input, string[] data)
         {
             if (data.Length == 2)
             {
                 string relPath = data[1];
-                IOManager.ChangeCurrentDirectoryRelative(relPath);
+                this.inputOutputManager.ChangeCurrentDirectoryRelative(relPath);
             }
             else
             {
@@ -153,12 +176,12 @@ namespace SimpleSoftProject.IO
             }
         }
 
-        private static void TryChangePathAbsolute(string input, string[] data)
+        private void TryChangePathAbsolute(string input, string[] data)
         {
             if (data.Length == 2)
             {
                 string absolutePath = data[1];
-                IOManager.ChangeCurrentDirectoryAbsolute(absolutePath);
+                this.inputOutputManager.ChangeCurrentDirectoryAbsolute(absolutePath);
             }
             else
             {
@@ -166,12 +189,12 @@ namespace SimpleSoftProject.IO
             }
         }
 
-        private static void TryReadDatabaseFromFile(string input, string[] data)
+        private void TryReadDatabaseFromFile(string input, string[] data)
         {
             if (data.Length == 2)
             {
                 string fileName = data[1];
-                StudentsRepository.InitializeData(fileName);
+                this.repository.LoadData(fileName);
             }
             else
             {
@@ -179,7 +202,7 @@ namespace SimpleSoftProject.IO
             }
         }
 
-        private static void TryGetHelp(string input, string[] data)
+        private void TryGetHelp(string input, string[] data)
         {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine($"{new string('_', 100)}");
@@ -199,7 +222,7 @@ namespace SimpleSoftProject.IO
             OutputWriter.WriteMessageOnNewLine(stringBuilder.ToString());
         }
 
-        private static void TryFilterAndTake(string input, string[] data)
+        private void TryFilterAndTake(string input, string[] data)
         {
             if (data.Length == 5)
             {
@@ -216,13 +239,13 @@ namespace SimpleSoftProject.IO
             }
         }
 
-        private static void TryParseParametersForFilterAndTake(string takeCommand, string takeQuantity, string courseName, string filter)
+        private void TryParseParametersForFilterAndTake(string takeCommand, string takeQuantity, string courseName, string filter)
         {
             if (takeCommand == "take")
             {
                 if (takeQuantity == "all")
                 {
-                    StudentsRepository.FilterAndTake(courseName, filter);
+                    this.repository.FilterAndTake(courseName, filter);
                 }
                 else
                 {
@@ -230,7 +253,7 @@ namespace SimpleSoftProject.IO
                     bool hasParsed = int.TryParse(takeQuantity, out studentsToTake);
                     if (hasParsed)
                     {
-                        StudentsRepository.FilterAndTake(courseName, filter, studentsToTake);
+                        this.repository.FilterAndTake(courseName, filter, studentsToTake);
                     }
                     else
                     {
@@ -244,7 +267,7 @@ namespace SimpleSoftProject.IO
             }
         }
 
-        private static void TryOrderAndTake(string input, string[] data)
+        private void TryOrderAndTake(string input, string[] data)
         {
             if (data.Length == 5)
             {
@@ -261,13 +284,13 @@ namespace SimpleSoftProject.IO
             }
         }
 
-        private static void TryParseParametersForOrderAndTake(string takeCommand, string takeQuantity, string courseName, string orderType)
+        private void TryParseParametersForOrderAndTake(string takeCommand, string takeQuantity, string courseName, string orderType)
         {
             if (takeCommand == "take")
             {
                 if (takeQuantity == "all")
                 {
-                    StudentsRepository.OrderAndTake(courseName, orderType);
+                    this.repository.OrderAndTake(courseName, orderType);
                 }
                 else
                 {
@@ -275,7 +298,7 @@ namespace SimpleSoftProject.IO
                     bool hasParsed = int.TryParse(takeQuantity, out studentsToTake);
                     if (hasParsed)
                     {
-                        StudentsRepository.OrderAndTake(courseName, orderType, studentsToTake);
+                        this.repository.OrderAndTake(courseName, orderType, studentsToTake);
                     }
                     else
                     {
@@ -289,7 +312,45 @@ namespace SimpleSoftProject.IO
             }
         }
 
-        private static void DisplayInvalidCommandMessage(string input)
+        private void TryDropDb(string input, string[] data)
+        {
+            if (data.Length != 1)
+            {
+                this.DisplayInvalidCommandMessage(input);
+                return;
+            }
+
+            this.repository.UnloadData();
+            OutputWriter.WriteMessageOnNewLine("Database dropped!");
+        }
+
+        private void TryDownloadRequestedFile(string input, string[] data)
+        {
+            if (data.Length == 2)
+            {
+                string url = data[1];
+                this.downloadManager.Download(url);
+            }
+            else
+            {
+                DisplayInvalidCommandMessage(input);
+            }
+        }
+
+        private void TryDownloadRequestedFileAsync(string input, string[] data)
+        {
+            if (data.Length == 2)
+            {
+                string url = data[1];
+                this.downloadManager.DownloadAsync(url);
+            }
+            else
+            {
+                DisplayInvalidCommandMessage(input);
+            }
+        }
+
+        private void DisplayInvalidCommandMessage(string input)
         {
             OutputWriter.DisplayException($"The command '{input}' is invalid");
         }

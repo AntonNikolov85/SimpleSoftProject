@@ -48,8 +48,9 @@
     <Compile Include="IO\IOManager.cs" />
     <Compile Include="IO\OutputWriter.cs" />
     <Compile Include="Judge\Tester.cs" />
-    <Compile Include="Repository\RepositoryFilters.cs" />
-    <Compile Include="Repository\RepositorySorters.cs" />
+    <Compile Include="Network\DownloadManager.cs" />
+    <Compile Include="Repository\RepositoryFilter.cs" />
+    <Compile Include="Repository\RepositorySorter.cs" />
     <Compile Include="Repository\StudentsRepository.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -59,6 +60,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

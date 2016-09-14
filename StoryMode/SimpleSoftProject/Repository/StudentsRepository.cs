@@ -8,29 +8,43 @@ using SimpleSoftProject.Repository;
 
 namespace SimpleSoftProject.Repository
 {
-    public static class StudentsRepository
+    public class StudentsRepository
     {
-        public static bool isDataInitialized = false;
+        private Dictionary<string, Dictionary<string, List<int>>> studentsByCourse;
+        public bool isDataInitialized;
+        private RepositoryFilter filter;
+        private RepositorySorter sorter;
 
-        private static Dictionary<string, Dictionary<string, List<int>>> studentsByCourse;
-
-        public static object RepositioryFilters { get; private set; }
-
-        public static void InitializeData(string fileName)
+        public StudentsRepository(RepositoryFilter filter, RepositorySorter sorter)
         {
-            if (!isDataInitialized)
-            {
-                OutputWriter.WriteMessageOnNewLine("Reading data...");
-                studentsByCourse = new Dictionary<string, Dictionary<string, List<int>>>();
-                ReadData(fileName);
-            }
-            else
-            {
-                OutputWriter.WriteMessageOnNewLine(ExceptionMessages.DataAlreadyInitializedException);
-            }
+            this.filter = filter;
+            this.sorter = sorter;
+            this.studentsByCourse = new Dictionary<string, Dictionary<string, List<int>>>();
         }
 
-        private static void ReadData(string fileName)
+        public void LoadData(string fileName)
+        {
+            if (this.isDataInitialized)
+            {
+                OutputWriter.WriteMessageOnNewLine(ExceptionMessages.DataAlreadyInitializedException);
+                return;
+            }
+
+            ReadData(fileName);
+        }
+
+        public void UnloadData()
+        {
+            if (!this.isDataInitialized)
+            {
+                OutputWriter.DisplayException(ExceptionMessages.DataNotInitializedExceptionMessage);
+            }
+
+            this.studentsByCourse = new Dictionary<string, Dictionary<string, List<int>>>();
+            this.isDataInitialized = false;
+        }
+
+        private void ReadData(string fileName)
         {
             string path = SessionData.currentPath + "\\" + fileName;
 
@@ -76,7 +90,7 @@ namespace SimpleSoftProject.Repository
             }
         }
 
-        public static void GetStudentScoresFromCourse(string courseName, string username)
+        public void GetStudentScoresFromCourse(string courseName, string username)
         {
             if (IsQueryForStudentPossible(courseName, username))
             {
@@ -84,7 +98,7 @@ namespace SimpleSoftProject.Repository
             }
         }
 
-        public static void GetAllStudentsFromCourse(string courseName)
+        public void GetAllStudentsFromCourse(string courseName)
         {
             if (IsQueryForCoursePossible(courseName))
             {
@@ -96,7 +110,7 @@ namespace SimpleSoftProject.Repository
             }
         }
 
-        public static void OrderAndTake(string courseName, string comparison, int? studentsToTake = null)
+        public void OrderAndTake(string courseName, string comparison, int? studentsToTake = null)
         {
             if (IsQueryForCoursePossible(courseName))
             {
@@ -105,11 +119,11 @@ namespace SimpleSoftProject.Repository
                     studentsToTake = studentsByCourse[courseName].Count;
                 }
 
-                RepositorySorters.OrderAndTake(studentsByCourse[courseName], comparison, studentsToTake.Value);
+                this.sorter.OrderAndTake(studentsByCourse[courseName], comparison, studentsToTake.Value);
             }
         }
 
-        public static void FilterAndTake(string courseName, string givenFilter, int? studentsToTake = null)
+        public void FilterAndTake(string courseName, string givenFilter, int? studentsToTake = null)
         {
             if (IsQueryForCoursePossible(courseName))
             {
@@ -118,11 +132,11 @@ namespace SimpleSoftProject.Repository
                     studentsToTake = studentsByCourse[courseName].Count;
                 }
 
-                RepositoryFilters.FilterAndTake(studentsByCourse[courseName], givenFilter, studentsToTake.Value);
+                this.filter.FilterAndTake(studentsByCourse[courseName], givenFilter, studentsToTake.Value);
             }
         }
 
-        private static bool IsQueryForCoursePossible(string courseName)
+        private bool IsQueryForCoursePossible(string courseName)
         {
             if (isDataInitialized)
             {
@@ -143,7 +157,7 @@ namespace SimpleSoftProject.Repository
             return false;
         }
 
-        private static bool IsQueryForStudentPossible(string courseName, string studentUserName)
+        private bool IsQueryForStudentPossible(string courseName, string studentUserName)
         {
             if (IsQueryForCoursePossible(courseName) && studentsByCourse[courseName].ContainsKey(studentUserName))
             {

@@ -1,19 +1,24 @@
 ﻿using System;
 using SimpleSoftProject.IO;
 using SimpleSoftProject.Judge;
+using SimpleSoftProject.Network;
 using SimpleSoftProject.Repository;
 
 namespace SimpleSoftProject
 {
-    class Startup
+    public class Startup
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            /*StudentsRepository.InitializeData();
-            StudentsRepository.GetAllStudentsFromCourse("Unity");*/
-            //Tester.CompareContent(@"E:\Computer Staff\SoftUni\Labs\AdvancedLab\test2.txt", @"E:\Computer Staff\SoftUni\Labs\AdvancedLab\test3.txt");
-            //IOManager.TraverseDirectory(0);
-            InputReader.StartReadingCommands();
+            Tester tester = new Tester();
+            DownloadManager downloadManager = new DownloadManager();
+            IOManager ioManager = new IOManager();
+            StudentsRepository repo = new StudentsRepository(new RepositoryFilter(), new RepositorySorter());
+
+            CommandInterpreter currentInterpreter = new CommandInterpreter(tester, repo, downloadManager, ioManager);
+            InputReader reader = new InputReader(currentInterpreter);
+
+            reader.StartReadingCommands();
         }
     }
 }

@@ -6,9 +6,9 @@ using SimpleSoftProject.StaticData;
 
 namespace SimpleSoftProject.Repository
 {
-    public static class RepositoryFilters
+    public class RepositoryFilter
     {
-        public static void FilterAndTake(Dictionary<string, List<int>> wantedData, string wantedFilter, int studentsToTake)
+        public void FilterAndTake(Dictionary<string, List<int>> wantedData, string wantedFilter, int studentsToTake)
         {
             if (wantedFilter == "excellent")
             {
@@ -28,7 +28,7 @@ namespace SimpleSoftProject.Repository
             }
         }
 
-        private static void FilterAndTake(Dictionary<string, List<int>> wantedData, Predicate<double> givenFilter, int studentsToTake)
+        private void FilterAndTake(Dictionary<string, List<int>> wantedData, Predicate<double> givenFilter, int studentsToTake)
         {
             int counterForPrinted = 0;
             foreach (var userName_Points in wantedData)

@@ -6,10 +6,9 @@ using System.Linq;
 
 namespace SimpleSoftProject.Repository
 {
-    public static class RepositorySorters
+    public class RepositorySorter
     {
-        public static void OrderAndTake(Dictionary<string, List<int>> wantedData,
-    string comparison, int studentsToTake)
+        public void OrderAndTake(Dictionary<string, List<int>> wantedData, string comparison, int studentsToTake)
         {
             comparison = comparison.ToLower();
             if (comparison == "ascending")
@@ -30,7 +29,7 @@ namespace SimpleSoftProject.Repository
             }
         }
 
-        private static void PrintStudents(Dictionary<string, List<int>> studentsSorted)
+        private void PrintStudents(Dictionary<string, List<int>> studentsSorted)
         {
             foreach (KeyValuePair<string, List<int>> keyValuePair in studentsSorted)
             {
