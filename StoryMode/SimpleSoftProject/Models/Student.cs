@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SimpleSoftProject.Exceptions;
 using SimpleSoftProject.IO;
 using SimpleSoftProject.StaticData;
 
@@ -8,41 +9,61 @@ namespace SimpleSoftProject.Models
 {
     public class Student
     {
-        public string userName;
-        public Dictionary<string, Course> enrolledCourses;
-        public Dictionary<string, double> marksByCourseName;
+        private string userName;
+        private Dictionary<string, Course> enrolledCourses;
+        private Dictionary<string, double> marksByCourseName;
 
         public Student(string userName)
         {
-            this.userName = userName;
+            this.UserName = userName;
             this.enrolledCourses = new Dictionary<string, Course>();
             this.marksByCourseName = new Dictionary<string, double>();
         }
 
+        public string UserName
+        {
+            get { return this.userName; }
+            private set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    throw new ArgumentException(nameof(this.userName), ExceptionMessages.NullOrEmptyValue);
+                }
+
+                this.userName = value;
+            }
+        }
+
+        public IReadOnlyDictionary<string, Course> EnrolledCourses
+        {
+            get { return this.enrolledCourses; }
+        }
+
+        public IReadOnlyDictionary<string, double> MarksByCourseName
+        {
+            get { return this.marksByCourseName; }
+        }
+
         public void EnrollInCourse(Course course)
         {
-            if (this.enrolledCourses.ContainsKey(course.name))
+            if (this.enrolledCourses.ContainsKey(course.Name))
             {
-                OutputWriter.DisplayException(string.Format(ExceptionMessages.StudentAlreadyEnrolledInGivenCourse,
-                    this.userName, course.name));
-                return;
+                throw new DuplicateEntryInStructureException(this.UserName, course.Name);
             }
 
-            this.enrolledCourses.Add(course.name, course);
+            this.enrolledCourses.Add(course.Name, course);
         }
 
         public void SetMarkOnCourse(string courseName, params int[] scores)
         {
             if (!this.enrolledCourses.ContainsKey(courseName))
             {
-                OutputWriter.DisplayException(ExceptionMessages.NotEnrolledInCourse);
-                return;
+                throw new KeyNotFoundException(ExceptionMessages.NotEnrolledInCourse);
             }
 
             if (scores.Length > Course.NumberOfTaskOnExam)
             {
-                OutputWriter.DisplayException(ExceptionMessages.InvalidNumberOfScores);
-                return;
+                throw new ArgumentException(ExceptionMessages.InvalidNumberOfScores);
             }
 
             this.marksByCourseName.Add(courseName, CalculateMark(scores));

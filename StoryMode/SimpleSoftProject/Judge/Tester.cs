@@ -24,9 +24,9 @@ namespace SimpleSoftProject.Judge
                 PrintOutput(mismatches, hasMismatch, mismatchPath);
                 OutputWriter.WriteMessageOnNewLine("Files read!");
             }
-            catch (FileNotFoundException)
+            catch (IOException)
             {
-                OutputWriter.DisplayException(ExceptionMessages.InvalidPath);
+                throw new IOException(ExceptionMessages.InvalidPath);
             }
         }
 
@@ -79,15 +79,7 @@ namespace SimpleSoftProject.Judge
                     OutputWriter.WriteMessageOnNewLine(line);
                 }
 
-                try
-                {
-                    File.WriteAllLines(mismatchPath, mismatches);
-                }
-                catch (DirectoryNotFoundException)
-                {
-                    OutputWriter.DisplayException(ExceptionMessages.InvalidPath);
-                }
-
+                File.WriteAllLines(mismatchPath, mismatches);
                 return;
             }
 

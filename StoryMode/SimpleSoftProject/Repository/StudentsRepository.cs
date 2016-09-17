@@ -6,15 +6,16 @@ using SimpleSoftProject.IO;
 using SimpleSoftProject.Models;
 using SimpleSoftProject.StaticData;
 using System.Linq;
+using SimpleSoftProject.Exceptions;
 
 namespace SimpleSoftProject.Repository
 {
     public class StudentsRepository
     {
-        public bool isDataInitialized;
+        private bool isDataInitialized;
 
         private Dictionary<string, Course> courses;
-        private Dictionary<String, Student> students;
+        private Dictionary<string, Student> students;
 
         private RepositoryFilter filter;
         private RepositorySorter sorter;
@@ -25,12 +26,26 @@ namespace SimpleSoftProject.Repository
             this.sorter = sorter;
         }
 
+        public bool IsDataInitialized
+        {
+            get { return this.isDataInitialized; }
+        }
+
+        public IReadOnlyDictionary<string, Course> Courses
+        {
+            get { return this.courses; }
+        }
+
+        public IReadOnlyDictionary<string, Student> Students
+        {
+            get { return this.students; }
+        }
+
         public void LoadData(string fileName)
         {
             if (this.isDataInitialized)
             {
-                OutputWriter.WriteMessageOnNewLine(ExceptionMessages.DataAlreadyInitializedException);
-                return;
+                throw new ArgumentException(ExceptionMessages.DataAlreadyInitializedException);
             }
 
             this.students = new Dictionary<string, Student>();
@@ -42,7 +57,7 @@ namespace SimpleSoftProject.Repository
         {
             if (!this.isDataInitialized)
             {
-                OutputWriter.DisplayException(ExceptionMessages.DataNotInitializedExceptionMessage);
+                throw new ArgumentException(ExceptionMessages.DataNotInitializedExceptionMessage);
             }
 
             this.students = null;
@@ -77,11 +92,13 @@ namespace SimpleSoftProject.Repository
                             if (scores.Any(x => x > 100 || x < 0))
                             {
                                 OutputWriter.DisplayException(ExceptionMessages.InvalidScore);
+                                continue;
                             }
 
                             if (scores.Length > Course.NumberOfTaskOnExam)
                             {
                                 OutputWriter.DisplayException(ExceptionMessages.InvalidNumberOfScores);
+                                continue;
                             }
 
                             if (!students.ContainsKey(username))
@@ -114,7 +131,7 @@ namespace SimpleSoftProject.Repository
             }
             else
             {
-                OutputWriter.DisplayException(ExceptionMessages.InvalidPath);
+                throw new InvalidPathException();
             }
         }
 
@@ -122,7 +139,7 @@ namespace SimpleSoftProject.Repository
         {
             if (IsQueryForStudentPossible(courseName, username))
             {
-                OutputWriter.PrintStudent(new KeyValuePair<string, double>(username, this.courses[courseName].studentsByName[username].marksByCourseName[courseName]));
+                OutputWriter.PrintStudent(new KeyValuePair<string, double>(username, this.courses[courseName].StudentsByName[username].MarksByCourseName[courseName]));
             }
         }
 
@@ -131,7 +148,7 @@ namespace SimpleSoftProject.Repository
             if (IsQueryForCoursePossible(courseName))
             {
                 OutputWriter.WriteMessageOnNewLine($"{courseName}:");
-                foreach (var studentMarksEntry in this.courses[courseName].studentsByName)
+                foreach (var studentMarksEntry in this.courses[courseName].StudentsByName)
                 {
                     this.GetStudentScoresFromCourse(courseName, studentMarksEntry.Key);
                 }
@@ -144,10 +161,10 @@ namespace SimpleSoftProject.Repository
             {
                 if (studentsToTake == null)
                 {
-                    studentsToTake = this.courses[courseName].studentsByName.Count;
+                    studentsToTake = this.courses[courseName].StudentsByName.Count;
                 }
 
-                Dictionary<string, double> marks = this.courses[courseName].studentsByName.ToDictionary(x => x.Key, x => x.Value.marksByCourseName[courseName]);
+                Dictionary<string, double> marks = this.courses[courseName].StudentsByName.ToDictionary(x => x.Key, x => x.Value.MarksByCourseName[courseName]);
 
                 this.sorter.OrderAndTake(marks, comparison, studentsToTake.Value);
             }
@@ -159,10 +176,10 @@ namespace SimpleSoftProject.Repository
             {
                 if (studentsToTake == null)
                 {
-                    studentsToTake = this.courses[courseName].studentsByName.Count;
+                    studentsToTake = this.courses[courseName].StudentsByName.Count;
                 }
 
-                Dictionary<string, double> marks = this.courses[courseName].studentsByName.ToDictionary(x => x.Key, x => x.Value.marksByCourseName[courseName]);
+                Dictionary<string, double> marks = this.courses[courseName].StudentsByName.ToDictionary(x => x.Key, x => x.Value.MarksByCourseName[courseName]);
 
                 filter.FilterAndTake(marks, givenFilter, studentsToTake.Value);
             }
@@ -170,37 +187,27 @@ namespace SimpleSoftProject.Repository
 
         private bool IsQueryForCoursePossible(string courseName)
         {
-            if (isDataInitialized)
+            if (!isDataInitialized)
             {
-                if (this.courses.ContainsKey(courseName))
-                {
-                    return true;
-                }
-                else
-                {
-                    OutputWriter.DisplayException(ExceptionMessages.InexistingCourseInDataBase);
-                }
-            }
-            else
-            {
-                OutputWriter.DisplayException(ExceptionMessages.DataNotInitializedExceptionMessage);
+                throw new ArgumentNullException(nameof(this.isDataInitialized), ExceptionMessages.DataNotInitializedExceptionMessage);
             }
 
-            return false;
+            if (!this.Courses.ContainsKey(courseName))
+            {
+                throw new NullReferenceException(ExceptionMessages.InexistingCourseInDataBase);
+            }
+
+            return true;
         }
 
         private bool IsQueryForStudentPossible(string courseName, string studentUserName)
         {
-            if (IsQueryForCoursePossible(courseName) && this.courses[courseName].studentsByName.ContainsKey(studentUserName))
-            {
-                return true;
-            }
-            else
+            if (!(this.IsQueryForCoursePossible(courseName) && this.Courses[courseName].StudentsByName.ContainsKey(studentUserName)))
             {
                 OutputWriter.DisplayException(ExceptionMessages.InexistingStudentInDataBase);
             }
 
-            return false;
+            return true;
         }
     }
 }

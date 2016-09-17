@@ -76,7 +76,7 @@ namespace SimpleSoftProject.IO
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    OutputWriter.DisplayException(ExceptionMessages.InvalidDestination);
+                    throw new ArgumentOutOfRangeException(ExceptionMessages.InvalidDestination);
                 }
             }
             else
@@ -91,8 +91,7 @@ namespace SimpleSoftProject.IO
         {
             if (!Directory.Exists(absolutePath))
             {
-                OutputWriter.DisplayException(ExceptionMessages.InvalidPath);
-                return;
+                throw new DirectoryNotFoundException(ExceptionMessages.InvalidPath);
             }
 
             SessionData.currentPath = absolutePath;

@@ -43,6 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\DuplicateEntryInStructureException.cs" />
+    <Compile Include="Exceptions\InvalidPathException.cs" />
     <Compile Include="IO\CommandInterpreter.cs" />
     <Compile Include="IO\InputReader.cs" />
     <Compile Include="IO\IOManager.cs" />

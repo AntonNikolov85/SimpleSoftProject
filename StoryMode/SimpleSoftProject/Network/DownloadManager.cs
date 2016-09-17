@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using SimpleSoftProject.Exceptions;
 using SimpleSoftProject.IO;
 using SimpleSoftProject.StaticData;
 
@@ -28,9 +29,9 @@ namespace SimpleSoftProject.Network
 
                 OutputWriter.WriteMessageOnNewLine("Download complete");
             }
-            catch (WebException ex)
+            catch (WebException)
             {
-                OutputWriter.DisplayException(ex.Message);
+                throw new InvalidPathException();
             }
         }
 
@@ -48,10 +49,8 @@ namespace SimpleSoftProject.Network
             {
                 return fileURL.Substring(indexOfLastBackSlash + 1);
             }
-            else
-            {
-                throw new WebException(ExceptionMessages.InvalidPath);
-            }
+
+            throw new InvalidPathException();
         }
     }
 }
