@@ -48,6 +48,8 @@
     <Compile Include="IO\IOManager.cs" />
     <Compile Include="IO\OutputWriter.cs" />
     <Compile Include="Judge\Tester.cs" />
+    <Compile Include="Models\Course.cs" />
+    <Compile Include="Models\Student.cs" />
     <Compile Include="Network\DownloadManager.cs" />
     <Compile Include="Repository\RepositoryFilter.cs" />
     <Compile Include="Repository\RepositorySorter.cs" />

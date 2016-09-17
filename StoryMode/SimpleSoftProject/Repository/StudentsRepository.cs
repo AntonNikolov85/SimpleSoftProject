@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using SimpleSoftProject.IO;
+using SimpleSoftProject.Models;
 using SimpleSoftProject.StaticData;
-using SimpleSoftProject.Repository;
+using System.Linq;
 
 namespace SimpleSoftProject.Repository
 {
     public class StudentsRepository
     {
-        private Dictionary<string, Dictionary<string, List<int>>> studentsByCourse;
         public bool isDataInitialized;
+
+        private Dictionary<string, Course> courses;
+        private Dictionary<String, Student> students;
+
         private RepositoryFilter filter;
         private RepositorySorter sorter;
 
@@ -19,7 +23,6 @@ namespace SimpleSoftProject.Repository
         {
             this.filter = filter;
             this.sorter = sorter;
-            this.studentsByCourse = new Dictionary<string, Dictionary<string, List<int>>>();
         }
 
         public void LoadData(string fileName)
@@ -30,6 +33,8 @@ namespace SimpleSoftProject.Repository
                 return;
             }
 
+            this.students = new Dictionary<string, Student>();
+            this.courses = new Dictionary<string, Course>();
             ReadData(fileName);
         }
 
@@ -40,17 +45,19 @@ namespace SimpleSoftProject.Repository
                 OutputWriter.DisplayException(ExceptionMessages.DataNotInitializedExceptionMessage);
             }
 
-            this.studentsByCourse = new Dictionary<string, Dictionary<string, List<int>>>();
+            this.students = null;
+            this.courses = null;
             this.isDataInitialized = false;
         }
 
         private void ReadData(string fileName)
         {
+            OutputWriter.WriteMessageOnNewLine("Reading data...");
             string path = SessionData.currentPath + "\\" + fileName;
 
             if (File.Exists(path))
             {
-                string pattern = @"([A-Z][a-zA-Z#+]*_[A-Z][a-z]{2}_\d{4})\s+([A-Z][a-z]{0,3}\d{2}_\d{2,4})\s+(\d+)";
+                string pattern = @"([A-Z][a-zA-Z#\++]*_[A-Z][a-z]{2}_\d{4})\s+([A-Za-z]+\d{2}_\d{2,4})\s([\s0-9]+)";
                 Regex rgx = new Regex(pattern);
                 string[] allInputLines = File.ReadAllLines(path);
 
@@ -61,22 +68,43 @@ namespace SimpleSoftProject.Repository
                         Match currentMatch = rgx.Match(allInputLines[line]);
                         string courseName = currentMatch.Groups[1].Value;
                         string username = currentMatch.Groups[2].Value;
-                        int studentScoreOnTask;
-                        bool hasParsedScore = int.TryParse(currentMatch.Groups[3].Value, out studentScoreOnTask);
+                        string scoresStr = currentMatch.Groups[3].Value;
 
-                        if (hasParsedScore && studentScoreOnTask >= 0 && studentScoreOnTask <= 100)
+                        try
                         {
-                            if (!studentsByCourse.ContainsKey(courseName))
+                            int[] scores = scoresStr.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).ToArray();
+
+                            if (scores.Any(x => x > 100 || x < 0))
                             {
-                                studentsByCourse.Add(courseName, new Dictionary<string, List<int>>());
+                                OutputWriter.DisplayException(ExceptionMessages.InvalidScore);
                             }
 
-                            if (!studentsByCourse[courseName].ContainsKey(username))
+                            if (scores.Length > Course.NumberOfTaskOnExam)
                             {
-                                studentsByCourse[courseName].Add(username, new List<int>());
+                                OutputWriter.DisplayException(ExceptionMessages.InvalidNumberOfScores);
                             }
 
-                            studentsByCourse[courseName][username].Add(studentScoreOnTask);
+                            if (!students.ContainsKey(username))
+                            {
+                                this.students.Add(username, new Student(username));
+                            }
+
+                            if (!this.courses.ContainsKey(courseName))
+                            {
+                                this.courses.Add(courseName, new Course(courseName));
+                            }
+
+                            Course course = this.courses[courseName];
+                            Student student = this.students[username];
+
+                            student.EnrollInCourse(course);
+                            student.SetMarkOnCourse(courseName, scores);
+
+                            course.EnrollStudent(student);
+                        }
+                        catch (FormatException fex)
+                        {
+                            throw new FormatException(fex.Message + $"at line : {line}");
                         }
                     }
                 }
@@ -94,7 +122,7 @@ namespace SimpleSoftProject.Repository
         {
             if (IsQueryForStudentPossible(courseName, username))
             {
-                OutputWriter.PrintStudent(new KeyValuePair<string, List<int>>(username, studentsByCourse[courseName][username]));
+                OutputWriter.PrintStudent(new KeyValuePair<string, double>(username, this.courses[courseName].studentsByName[username].marksByCourseName[courseName]));
             }
         }
 
@@ -103,9 +131,9 @@ namespace SimpleSoftProject.Repository
             if (IsQueryForCoursePossible(courseName))
             {
                 OutputWriter.WriteMessageOnNewLine($"{courseName}:");
-                foreach (var studentMarksEntry in studentsByCourse[courseName])
+                foreach (var studentMarksEntry in this.courses[courseName].studentsByName)
                 {
-                    OutputWriter.PrintStudent(studentMarksEntry);
+                    this.GetStudentScoresFromCourse(courseName, studentMarksEntry.Key);
                 }
             }
         }
@@ -116,10 +144,12 @@ namespace SimpleSoftProject.Repository
             {
                 if (studentsToTake == null)
                 {
-                    studentsToTake = studentsByCourse[courseName].Count;
+                    studentsToTake = this.courses[courseName].studentsByName.Count;
                 }
 
-                this.sorter.OrderAndTake(studentsByCourse[courseName], comparison, studentsToTake.Value);
+                Dictionary<string, double> marks = this.courses[courseName].studentsByName.ToDictionary(x => x.Key, x => x.Value.marksByCourseName[courseName]);
+
+                this.sorter.OrderAndTake(marks, comparison, studentsToTake.Value);
             }
         }
 
@@ -129,10 +159,12 @@ namespace SimpleSoftProject.Repository
             {
                 if (studentsToTake == null)
                 {
-                    studentsToTake = studentsByCourse[courseName].Count;
+                    studentsToTake = this.courses[courseName].studentsByName.Count;
                 }
 
-                this.filter.FilterAndTake(studentsByCourse[courseName], givenFilter, studentsToTake.Value);
+                Dictionary<string, double> marks = this.courses[courseName].studentsByName.ToDictionary(x => x.Key, x => x.Value.marksByCourseName[courseName]);
+
+                filter.FilterAndTake(marks, givenFilter, studentsToTake.Value);
             }
         }
 
@@ -140,7 +172,7 @@ namespace SimpleSoftProject.Repository
         {
             if (isDataInitialized)
             {
-                if (studentsByCourse.ContainsKey(courseName))
+                if (this.courses.ContainsKey(courseName))
                 {
                     return true;
                 }
@@ -159,7 +191,7 @@ namespace SimpleSoftProject.Repository
 
         private bool IsQueryForStudentPossible(string courseName, string studentUserName)
         {
-            if (IsQueryForCoursePossible(courseName) && studentsByCourse[courseName].ContainsKey(studentUserName))
+            if (IsQueryForCoursePossible(courseName) && this.courses[courseName].studentsByName.ContainsKey(studentUserName))
             {
                 return true;
             }
