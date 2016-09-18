@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SimpleSoftProject.Exceptions;
 using SimpleSoftProject.IO;
 using SimpleSoftProject.StaticData;
 
@@ -7,7 +8,7 @@ namespace SimpleSoftProject.Models
 {
     public class Course
     {
-        public const int NumberOfTaskOnExam = 5;
+        public const int NumberOfTaskOnExam = 10;
         public const int MaxScoreOnExamTask = 100;
 
         private string name;
@@ -26,7 +27,7 @@ namespace SimpleSoftProject.Models
             {
                 if (string.IsNullOrEmpty(value))
                 {
-                    throw new ArgumentException(nameof(this.name), ExceptionMessages.NullOrEmptyValue);
+                    throw new InvalidStringException();
                 }
 
                 this.name = value;

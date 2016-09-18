@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using SimpleSoftProject.Exceptions;
 using SimpleSoftProject.StaticData;
 
 namespace SimpleSoftProject.IO
@@ -59,7 +60,7 @@ namespace SimpleSoftProject.IO
             }
             catch (ArgumentException)
             {
-                OutputWriter.DisplayException(ExceptionMessages.ForbiddenSymbolsContainedInName);
+                throw new InvalidFileNameException();
             }
         }
 
@@ -76,7 +77,7 @@ namespace SimpleSoftProject.IO
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    throw new ArgumentOutOfRangeException(ExceptionMessages.InvalidDestination);
+                    throw new InvalidPathException();
                 }
             }
             else
