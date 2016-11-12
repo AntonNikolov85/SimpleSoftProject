@@ -1,16 +1,13 @@
-﻿using System;
+﻿using SimpleSoftProject.Contracts;
 using SimpleSoftProject.Exceptions;
-using SimpleSoftProject.Judge;
-using SimpleSoftProject.Network;
-using SimpleSoftProject.Repository;
 using SimpleSoftProject.StaticData;
 
 namespace SimpleSoftProject.IO.Commands
 {
     public class PrintFilteredStudentsCommand : Command
     {
-        public PrintFilteredStudentsCommand(string input, string[] data, Tester tester, StudentsRepository repository, 
-            DownloadManager downloadManager, IOManager inputOutputManager) 
+        public PrintFilteredStudentsCommand(string input, string[] data, IContentComparer tester, IDatabase repository, 
+            IDownloadManager downloadManager, IDirectoryManager inputOutputManager) 
             : base(input, data, tester, repository, downloadManager, inputOutputManager)
         {
         }

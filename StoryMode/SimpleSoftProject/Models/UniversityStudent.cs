@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SimpleSoftProject.Contracts;
 using SimpleSoftProject.Exceptions;
 using SimpleSoftProject.IO;
 using SimpleSoftProject.StaticData;
 
 namespace SimpleSoftProject.Models
 {
-    public class Student
+    public class UniversityStudent : Student
     {
         private string userName;
         private Dictionary<string, Course> enrolledCourses;
         private Dictionary<string, double> marksByCourseName;
 
-        public Student(string userName)
+        public UniversityStudent(string userName)
         {
             this.UserName = userName;
             this.enrolledCourses = new Dictionary<string, Course>();
@@ -61,7 +62,7 @@ namespace SimpleSoftProject.Models
                 throw new KeyNotFoundException(ExceptionMessages.NotEnrolledInCourse);
             }
 
-            if (scores.Length > Course.NumberOfTaskOnExam)
+            if (scores.Length > UniversityCourse.NumberOfTaskOnExam)
             {
                 throw new ArgumentException(ExceptionMessages.InvalidNumberOfScores);
             }
@@ -69,9 +70,14 @@ namespace SimpleSoftProject.Models
             this.marksByCourseName.Add(courseName, CalculateMark(scores));
         }
 
+        public string GetMarkForCourse(string courseName)
+        {
+            return string.Format($"{this.userName} - {this.MarksByCourseName[courseName]}");
+        }
+
         private double CalculateMark(int[] scores)
         {
-            double percentageOfSolvedExam = scores.Sum()/(double) (Course.NumberOfTaskOnExam*Course.MaxScoreOnExamTask);
+            double percentageOfSolvedExam = scores.Sum()/(double) (UniversityCourse.NumberOfTaskOnExam*UniversityCourse.MaxScoreOnExamTask);
             double mark = percentageOfSolvedExam * 4 + 2;
             return mark;
         }

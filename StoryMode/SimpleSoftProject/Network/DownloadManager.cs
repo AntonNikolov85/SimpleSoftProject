@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using SimpleSoftProject.Contracts;
 using SimpleSoftProject.Exceptions;
 using SimpleSoftProject.IO;
 using SimpleSoftProject.StaticData;
 
 namespace SimpleSoftProject.Network
 {
-    public class DownloadManager
+    public class DownloadManager : IDownloadManager
     {
         private WebClient webClient;
 

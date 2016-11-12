@@ -1,16 +1,13 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
+using SimpleSoftProject.Contracts;
 using SimpleSoftProject.Exceptions;
-using SimpleSoftProject.Judge;
-using SimpleSoftProject.Network;
-using SimpleSoftProject.Repository;
 
 namespace SimpleSoftProject.IO.Commands
 {
     public class GetHelpCommand : Command
     {
-        public GetHelpCommand(string input, string[] data, Tester tester, StudentsRepository repository, 
-            DownloadManager downloadManager, IOManager inputOutputManager) 
+        public GetHelpCommand(string input, string[] data, IContentComparer tester, IDatabase repository, 
+            IDownloadManager downloadManager, IDirectoryManager inputOutputManager) 
             : base(input, data, tester, repository, downloadManager, inputOutputManager)
         {
         }

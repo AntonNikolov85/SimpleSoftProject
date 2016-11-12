@@ -2,16 +2,17 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using SimpleSoftProject.Contracts;
 
 namespace SimpleSoftProject.IO
 {
-    public class InputReader
+    public class InputReader : IReader
     {
         private const string endCommand = "quit";
 
-        private CommandInterpreter interpreter;
+        private IInterpreter interpreter;
 
-        public InputReader(CommandInterpreter interpreter)
+        public InputReader(IInterpreter interpreter)
         {
             this.interpreter = interpreter;
         }

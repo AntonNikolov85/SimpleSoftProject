@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
+using SimpleSoftProject.Contracts;
 using SimpleSoftProject.IO;
 using SimpleSoftProject.StaticData;
 
 namespace SimpleSoftProject.Judge
 {
-    public class Tester
+    public class Tester : IContentComparer
     {
         public void CompareContent(string userOutputPath, string expectedOutputPath)
         {

@@ -6,11 +6,12 @@ using SimpleSoftProject.IO;
 using SimpleSoftProject.Models;
 using SimpleSoftProject.StaticData;
 using System.Linq;
+using SimpleSoftProject.Contracts;
 using SimpleSoftProject.Exceptions;
 
 namespace SimpleSoftProject.Repository
 {
-    public class StudentsRepository
+    public class StudentsRepository : IDatabase
     {
         private bool isDataInitialized;
 
@@ -95,7 +96,7 @@ namespace SimpleSoftProject.Repository
                                 continue;
                             }
 
-                            if (scores.Length > Course.NumberOfTaskOnExam)
+                            if (scores.Length > UniversityCourse.NumberOfTaskOnExam)
                             {
                                 OutputWriter.DisplayException(ExceptionMessages.InvalidNumberOfScores);
                                 continue;
@@ -103,12 +104,12 @@ namespace SimpleSoftProject.Repository
 
                             if (!students.ContainsKey(username))
                             {
-                                this.students.Add(username, new Student(username));
+                                this.students.Add(username, new UniversityStudent(username));
                             }
 
                             if (!this.courses.ContainsKey(courseName))
                             {
-                                this.courses.Add(courseName, new Course(courseName));
+                                this.courses.Add(courseName, new UniversityCourse(courseName));
                             }
 
                             Course course = this.courses[courseName];

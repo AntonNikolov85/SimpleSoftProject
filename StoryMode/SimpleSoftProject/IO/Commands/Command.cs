@@ -1,23 +1,21 @@
-﻿using System;
+﻿using SimpleSoftProject.Contracts;
 using SimpleSoftProject.Exceptions;
-using SimpleSoftProject.Judge;
-using SimpleSoftProject.Network;
-using SimpleSoftProject.Repository;
+
 
 namespace SimpleSoftProject.IO.Commands
 {
-    public abstract class Command
+    public abstract class Command : IExecutable
     {
         private string input;
         private string[] data;
 
-        private Tester tester;
-        private StudentsRepository repository;
-        private DownloadManager downloadManager;
-        private IOManager inputOutputManager;
+        private IContentComparer tester;
+        private IDatabase repository;
+        private IDownloadManager downloadManager;
+        private IDirectoryManager inputOutputManager;
 
-        protected Command(string input, string[] data, Tester tester, StudentsRepository repository, 
-            DownloadManager downloadManager, IOManager inputOutputManager)
+        protected Command(string input, string[] data, IContentComparer tester, IDatabase repository, 
+            IDownloadManager downloadManager, IDirectoryManager inputOutputManager)
         {
             this.input = input;
             this.data = data;
@@ -55,22 +53,22 @@ namespace SimpleSoftProject.IO.Commands
             }
         }
 
-        protected StudentsRepository Repository
+        protected IDatabase Repository
         {
             get { return this.repository; }
         }
 
-        protected Tester Tester
+        protected IContentComparer Tester
         {
             get { return this.tester; }
         }
 
-        protected IOManager InputOutputManager
+        protected IDirectoryManager InputOutputManager
         {
             get { return this.inputOutputManager; }
         }
 
-        protected DownloadManager DownloadManager
+        protected IDownloadManager DownloadManager
         {
             get { return this.downloadManager; }
         }

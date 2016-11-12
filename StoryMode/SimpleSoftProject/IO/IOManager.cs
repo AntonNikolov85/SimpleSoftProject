@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using SimpleSoftProject.Contracts;
 using SimpleSoftProject.Exceptions;
 using SimpleSoftProject.StaticData;
 
 namespace SimpleSoftProject.IO
 {
-    public class IOManager
+    public class IOManager : IDirectoryManager
     {
         public void TraverseDirectory(int depth)
         {

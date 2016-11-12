@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using SimpleSoftProject.Contracts;
 using SimpleSoftProject.Exceptions;
 using SimpleSoftProject.IO;
 using SimpleSoftProject.StaticData;
 
 namespace SimpleSoftProject.Models
 {
-    public class Course
+    public class UniversityCourse : Course
     {
         public const int NumberOfTaskOnExam = 10;
         public const int MaxScoreOnExamTask = 100;
@@ -14,7 +15,7 @@ namespace SimpleSoftProject.Models
         private string name;
         private Dictionary<string, Student> studentsByName;
 
-        public Course(string name)
+        public UniversityCourse(string name)
         {
             this.Name = name;
             this.studentsByName = new Dictionary<string, Student>();

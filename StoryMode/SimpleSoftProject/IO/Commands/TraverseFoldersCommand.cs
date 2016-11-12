@@ -1,15 +1,12 @@
-﻿using System;
+﻿using SimpleSoftProject.Contracts;
 using SimpleSoftProject.Exceptions;
-using SimpleSoftProject.Judge;
-using SimpleSoftProject.Network;
-using SimpleSoftProject.Repository;
 
 namespace SimpleSoftProject.IO.Commands
 {
     public class TraverseFoldersCommand : Command
     {
-        public TraverseFoldersCommand(string input, string[] data, Tester tester, StudentsRepository repository, 
-            DownloadManager downloadManager, IOManager inputOutputManager) 
+        public TraverseFoldersCommand(string input, string[] data, IContentComparer tester, IDatabase repository, 
+            IDownloadManager downloadManager, IDirectoryManager inputOutputManager) 
             : base(input, data, tester, repository, downloadManager, inputOutputManager)
         {
         }

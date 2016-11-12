@@ -43,6 +43,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contracts\Course.cs" />
+    <Compile Include="Contracts\IDirectoryChanger.cs" />
+    <Compile Include="Contracts\IDirectoryCreator.cs" />
+    <Compile Include="Contracts\IDirectoryManager.cs" />
+    <Compile Include="Contracts\IDirectoryTraverser.cs" />
+    <Compile Include="Contracts\IExecutable.cs" />
+    <Compile Include="Contracts\IInterpreter.cs" />
+    <Compile Include="Contracts\IReader.cs" />
+    <Compile Include="Contracts\Student.cs" />
     <Compile Include="Exceptions\DuplicateEntryInStructureException.cs" />
     <Compile Include="Exceptions\InvalidCommandException.cs" />
     <Compile Include="Exceptions\InvalidFileNameException.cs" />
@@ -68,8 +77,8 @@
     <Compile Include="IO\IOManager.cs" />
     <Compile Include="IO\OutputWriter.cs" />
     <Compile Include="Judge\Tester.cs" />
-    <Compile Include="Models\Course.cs" />
-    <Compile Include="Models\Student.cs" />
+    <Compile Include="Models\UniversityCourse.cs" />
+    <Compile Include="Models\UniversityStudent.cs" />
     <Compile Include="Network\DownloadManager.cs" />
     <Compile Include="Repository\RepositoryFilter.cs" />
     <Compile Include="Repository\RepositorySorter.cs" />

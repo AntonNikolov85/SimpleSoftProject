@@ -1,24 +1,22 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Text;
+using SimpleSoftProject.Contracts;
 using SimpleSoftProject.Exceptions;
 using SimpleSoftProject.Judge;
 using SimpleSoftProject.Network;
 using SimpleSoftProject.Repository;
-using SimpleSoftProject.StaticData;
 using SimpleSoftProject.IO.Commands;
 
 namespace SimpleSoftProject.IO
 {
-    public class CommandInterpreter
+    public class CommandInterpreter : IInterpreter
     {
-        private Tester judge;
-        private StudentsRepository repository;
-        private DownloadManager downloadManager;
-        private IOManager inputOutputManager;
+        private IContentComparer judge;
+        private IDatabase repository;
+        private IDownloadManager downloadManager;
+        private IDirectoryManager inputOutputManager;
 
-        public CommandInterpreter(Tester judge, StudentsRepository repository, DownloadManager downloadManager, IOManager inputOutputManager)
+        public CommandInterpreter(IContentComparer judge, IDatabase repository, IDownloadManager downloadManager, IDirectoryManager inputOutputManager)
         {
             this.judge = judge;
             this.repository = repository;
@@ -33,7 +31,7 @@ namespace SimpleSoftProject.IO
 
             try
             {
-                Command command = this.ParseCommand(input, commandName, data);
+                IExecutable command = this.ParseCommand(input, commandName, data);
                 command.Execute();
             }
             catch (DirectoryNotFoundException dnfe)
@@ -54,7 +52,7 @@ namespace SimpleSoftProject.IO
             }
         }
 
-        private Command ParseCommand(string input, string command, string[] data)
+        private IExecutable ParseCommand(string input, string command, string[] data)
         {
             switch (command)
             {
