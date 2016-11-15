@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SimpleSoftProject.Contracts
 {
-    public interface Student
+    public interface Student : IComparable<Student>
     {
         string UserName { get; }
 

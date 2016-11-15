@@ -7,6 +7,7 @@ using SimpleSoftProject.Models;
 using SimpleSoftProject.StaticData;
 using System.Linq;
 using SimpleSoftProject.Contracts;
+using SimpleSoftProject.DataStructures;
 using SimpleSoftProject.Exceptions;
 
 namespace SimpleSoftProject.Repository
@@ -209,6 +210,22 @@ namespace SimpleSoftProject.Repository
             }
 
             return true;
+        }
+
+        public ISimpleOrderedDataStructure<Course> GetAllCoursesSorted(IComparer<Course> cmp)
+        {
+            SimpleSortedList<Course> sortedCourses = new SimpleSortedList<Course>();
+            sortedCourses.AddAll(courses.Values);
+
+            return sortedCourses;
+        }
+
+        public ISimpleOrderedDataStructure<Student> GetAllStudentsSorted(IComparer<Student> cmp)
+        {
+            SimpleSortedList<Student> sortedStudents = new SimpleSortedList<Student>();
+            sortedStudents.AddAll(students.Values);
+
+            return sortedStudents;
         }
     }
 }

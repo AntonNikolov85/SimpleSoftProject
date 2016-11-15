@@ -2,9 +2,6 @@
 using System.IO;
 using SimpleSoftProject.Contracts;
 using SimpleSoftProject.Exceptions;
-using SimpleSoftProject.Judge;
-using SimpleSoftProject.Network;
-using SimpleSoftProject.Repository;
 using SimpleSoftProject.IO.Commands;
 
 namespace SimpleSoftProject.IO
@@ -56,6 +53,9 @@ namespace SimpleSoftProject.IO
         {
             switch (command)
             {
+                case "display":
+                    return new DisplayCommand(input, data, this.judge, this.repository,
+                        this.downloadManager, this.inputOutputManager);
                 case "show":
                     return new ShowCourseCommand(input, data, this.judge, this.repository,
                         this.downloadManager, this.inputOutputManager);

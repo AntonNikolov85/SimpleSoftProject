@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using SimpleSoftProject.Contracts;
 using SimpleSoftProject.Exceptions;
-using SimpleSoftProject.IO;
 using SimpleSoftProject.StaticData;
 
 namespace SimpleSoftProject.Models
@@ -80,6 +79,16 @@ namespace SimpleSoftProject.Models
             double percentageOfSolvedExam = scores.Sum()/(double) (UniversityCourse.NumberOfTaskOnExam*UniversityCourse.MaxScoreOnExamTask);
             double mark = percentageOfSolvedExam * 4 + 2;
             return mark;
+        }
+
+        public int CompareTo(Student other)
+        {
+            return String.Compare(this.UserName, other.UserName, StringComparison.Ordinal);
+        }
+
+        public override string ToString()
+        {
+            return this.UserName;
         }
     }
 }

@@ -52,6 +52,14 @@ namespace SimpleSoftProject.Models
             this.studentsByName.Add(student.UserName, student);
         }
 
+        public int CompareTo(Course other)
+        {
+            return String.Compare(this.Name, other.Name, StringComparison.Ordinal);
+        }
 
+        public override string ToString()
+        {
+            return this.Name;
+        }
     }
 }

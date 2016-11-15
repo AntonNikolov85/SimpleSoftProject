@@ -37,6 +37,7 @@ namespace SimpleSoftProject.IO.Commands
             stringBuilder.AppendLine(string.Format("|{0, -98}|", "download file - download URL (saved in current directory)"));
             stringBuilder.AppendLine(string.Format("|{0, -98}|", "download file asinchronously - downloadAsynch URL (saved in the current directory)"));
             stringBuilder.AppendLine(string.Format("|{0, -98}|", "get help – help"));
+            stringBuilder.AppendLine(string.Format("|{0, -98}|", "display data entities - display students/courses ascending/descending"));
             stringBuilder.AppendLine($"{new string('_', 100)}");
             stringBuilder.AppendLine();
             OutputWriter.WriteMessageOnNewLine(stringBuilder.ToString());
