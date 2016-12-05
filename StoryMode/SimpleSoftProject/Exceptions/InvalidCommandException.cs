@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace SimpleSoftProject.Exceptions
+﻿namespace SimpleSoftProject.Exceptions
 {
+    using System;
+
     public class InvalidCommandException : Exception
     {
         private const string InvalidCommandMessage = "The command {0} is invalid.";

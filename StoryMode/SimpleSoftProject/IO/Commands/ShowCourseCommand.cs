@@ -1,13 +1,17 @@
-﻿using SimpleSoftProject.Contracts;
-using SimpleSoftProject.Exceptions;
-
-namespace SimpleSoftProject.IO.Commands
+﻿namespace SimpleSoftProject.IO.Commands
 {
+    using Attributes;
+    using Contracts;
+    using Exceptions;
+
+    [Command("show")]
     public class ShowCourseCommand : Command
     {
-        public ShowCourseCommand(string input, string[] data, IContentComparer tester, IDatabase repository, 
-            IDownloadManager downloadManager, IDirectoryManager inputOutputManager) 
-            : base(input, data, tester, repository, downloadManager, inputOutputManager)
+        [Inject]
+        private IDatabase repository;
+
+        public ShowCourseCommand(string input, string[] data) 
+            : base(input, data)
         {
         }
 
@@ -16,13 +20,13 @@ namespace SimpleSoftProject.IO.Commands
             if (this.Data.Length == 2)
             {
                 string courseName = this.Data[1];
-                this.Repository.GetAllStudentsFromCourse(courseName);
+                this.repository.GetAllStudentsFromCourse(courseName);
             }
             else if (this.Data.Length == 3)
             {
                 string courseName = this.Data[1];
                 string userName = this.Data[2];
-                this.Repository.GetStudentScoresFromCourse(courseName, userName);
+                this.repository.GetStudentScoresFromCourse(courseName, userName);
             }
             else
             {

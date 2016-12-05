@@ -1,15 +1,15 @@
-﻿using System.Diagnostics;
-using SimpleSoftProject.Contracts;
-using SimpleSoftProject.Exceptions;
-using SimpleSoftProject.StaticData;
-
-namespace SimpleSoftProject.IO.Commands
+﻿namespace SimpleSoftProject.IO.Commands
 {
+    using System.Diagnostics;
+    using Attributes;
+    using Exceptions;
+    using StaticData;
+
+    [Command("open")]
     public class OpenFileCommand : Command
     {
-        public OpenFileCommand(string input, string[] data, IContentComparer tester, IDatabase repository, 
-            IDownloadManager downloadManager, IDirectoryManager inputOutputManager) 
-            : base(input, data, tester, repository, downloadManager, inputOutputManager)
+        public OpenFileCommand(string input, string[] data) 
+            : base(input, data)
         {
         }
 

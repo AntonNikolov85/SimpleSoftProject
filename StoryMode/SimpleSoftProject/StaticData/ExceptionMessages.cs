@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SimpleSoftProject.StaticData
+﻿namespace SimpleSoftProject.StaticData
 {
     public static class ExceptionMessages
     {

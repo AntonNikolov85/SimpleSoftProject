@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SimpleSoftProject.Contracts;
-
-namespace SimpleSoftProject.DataStructures
+﻿namespace SimpleSoftProject.DataStructures
 {
+    using System;
+    using System.Linq;
+    using System.Text;
+    using Contracts;
+    using System.Collections;
+    using System.Collections.Generic;
+
     public class SimpleSortedList<T> : ISimpleOrderedDataStructure<T>
         where T : IComparable<T>
     {

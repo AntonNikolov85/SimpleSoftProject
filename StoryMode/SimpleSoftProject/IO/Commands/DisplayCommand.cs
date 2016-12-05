@@ -1,15 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using SimpleSoftProject.Contracts;
-using SimpleSoftProject.Exceptions;
-
-namespace SimpleSoftProject.IO.Commands
+﻿namespace SimpleSoftProject.IO.Commands
 {
+    using System;
+    using Attributes;
+    using Contracts;
+    using Exceptions;
+    using System.Collections.Generic;
+
+    [Command("display")]
     public class DisplayCommand : Command
     {
-        public DisplayCommand(string input, string[] data, IContentComparer tester, IDatabase repository, 
-            IDownloadManager downloadManager, IDirectoryManager inputOutputManager) 
-            : base(input, data, tester, repository, downloadManager, inputOutputManager)
+        [Inject]
+        private IDatabase repository;
+
+        public DisplayCommand(string input, string[] data) 
+            : base(input, data)
         {
         }
 
@@ -55,13 +59,13 @@ namespace SimpleSoftProject.IO.Commands
             if (entityToDisplay.Equals("students", StringComparison.OrdinalIgnoreCase))
             {
                 IComparer<Student> studentComparator = this.CreateStudentComparator(sortType);
-                ISimpleOrderedDataStructure<Student> list = this.Repository.GetAllStudentsSorted(studentComparator);
+                ISimpleOrderedDataStructure<Student> list = this.repository.GetAllStudentsSorted(studentComparator);
                 OutputWriter.WriteMessageOnNewLine(list.JoinWith(Environment.NewLine));
             }
             else if (entityToDisplay.Equals("courses", StringComparison.OrdinalIgnoreCase))
             {
                 IComparer<Course> courseComparator = this.CreateCourseComparator(sortType);
-                ISimpleOrderedDataStructure<Course> list = this.Repository.GetAllCoursesSorted(courseComparator);
+                ISimpleOrderedDataStructure<Course> list = this.repository.GetAllCoursesSorted(courseComparator);
                 OutputWriter.WriteMessageOnNewLine(list.JoinWith(Environment.NewLine));
             }
         }

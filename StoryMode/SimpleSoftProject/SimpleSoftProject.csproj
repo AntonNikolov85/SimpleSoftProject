@@ -43,6 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\CommandAttribute.cs" />
+    <Compile Include="Attributes\InjectAttribute.cs" />
     <Compile Include="Contracts\Course.cs" />
     <Compile Include="Contracts\IAsynchDownloader.cs" />
     <Compile Include="Contracts\IContentComparer.cs" />

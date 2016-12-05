@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using SimpleSoftProject.Contracts;
-using SimpleSoftProject.Exceptions;
-using SimpleSoftProject.IO;
-using SimpleSoftProject.StaticData;
-
-namespace SimpleSoftProject.Models
+﻿namespace SimpleSoftProject.Models
 {
+    using IO;
+    using System;
+    using Contracts;
+    using Exceptions;
+    using StaticData;
+    using System.Collections.Generic;
+
     public class UniversityCourse : Course
     {
         public const int NumberOfTaskOnExam = 10;

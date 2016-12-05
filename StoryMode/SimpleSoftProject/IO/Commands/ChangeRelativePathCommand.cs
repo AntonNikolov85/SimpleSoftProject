@@ -1,14 +1,17 @@
-﻿using SimpleSoftProject.Contracts;
-using SimpleSoftProject.Exceptions;
-
-
-namespace SimpleSoftProject.IO.Commands
+﻿namespace SimpleSoftProject.IO.Commands
 {
+    using Attributes;
+    using Contracts;
+    using Exceptions;
+
+    [Command("cdrel")]
     public class ChangeRelativePathCommand : Command
     {
-        public ChangeRelativePathCommand(string input, string[] data, IContentComparer tester, IDatabase repository, 
-            IDownloadManager downloadManager, IDirectoryManager inputOutputManager) 
-            : base(input, data, tester, repository, downloadManager, inputOutputManager)
+        [Inject]
+        private IDirectoryManager inputOutputManager;
+
+        public ChangeRelativePathCommand(string input, string[] data) 
+            : base(input, data)
         {
         }
 
@@ -20,7 +23,7 @@ namespace SimpleSoftProject.IO.Commands
             }
 
             string relPath = this.Data[1];
-            this.InputOutputManager.ChangeCurrentDirectoryRelative(relPath);
+            this.inputOutputManager.ChangeCurrentDirectoryRelative(relPath);
         }
     }
 }

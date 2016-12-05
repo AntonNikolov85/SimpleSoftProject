@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace SimpleSoftProject.Exceptions
+﻿namespace SimpleSoftProject.Exceptions
 {
+    using System;
+
     public class DuplicateEntryInStructureException : Exception
     {
         private const string DuplicateEntry = "The {0} already exists in {1}.";

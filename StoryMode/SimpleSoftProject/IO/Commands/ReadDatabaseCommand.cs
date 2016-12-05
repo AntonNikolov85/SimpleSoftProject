@@ -1,13 +1,17 @@
-﻿using SimpleSoftProject.Contracts;
-using SimpleSoftProject.Exceptions;
-
-namespace SimpleSoftProject.IO.Commands
+﻿namespace SimpleSoftProject.IO.Commands
 {
+    using Attributes;
+    using Contracts;
+    using Exceptions;
+
+    [Command("readdb")]
     public class ReadDatabaseCommand : Command
     {
-        public ReadDatabaseCommand(string input, string[] data, IContentComparer tester, IDatabase repository, 
-            IDownloadManager downloadManager, IDirectoryManager inputOutputManager) 
-            : base(input, data, tester, repository, downloadManager, inputOutputManager)
+        [Inject]
+        private IDatabase repository;
+
+        public ReadDatabaseCommand(string input, string[] data) 
+            : base(input, data)
         {
         }
 
@@ -19,7 +23,7 @@ namespace SimpleSoftProject.IO.Commands
             }
 
             string fileName = this.Data[1];
-            this.Repository.LoadData(fileName);
+            this.repository.LoadData(fileName);
         }
     }
 }

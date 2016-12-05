@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using SimpleSoftProject.IO;
-using SimpleSoftProject.StaticData;
-using System.Linq;
-using SimpleSoftProject.Contracts;
-
-namespace SimpleSoftProject.Repository
+﻿namespace SimpleSoftProject.Repository
 {
+    using IO;
+    using StaticData;
+    using System.Linq;
+    using Contracts;
+    using System.Collections.Generic;
+
     public class RepositorySorter : IDataSorter
     {
         public void OrderAndTake(Dictionary<string, double> studentsWithMarks, string comparison, int studentsToTake)

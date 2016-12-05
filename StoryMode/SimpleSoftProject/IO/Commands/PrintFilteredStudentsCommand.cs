@@ -1,14 +1,18 @@
-﻿using SimpleSoftProject.Contracts;
-using SimpleSoftProject.Exceptions;
-using SimpleSoftProject.StaticData;
-
-namespace SimpleSoftProject.IO.Commands
+﻿namespace SimpleSoftProject.IO.Commands
 {
+    using Attributes;
+    using Contracts;
+    using Exceptions;
+    using StaticData;
+
+    [Command("filter")]
     public class PrintFilteredStudentsCommand : Command
     {
-        public PrintFilteredStudentsCommand(string input, string[] data, IContentComparer tester, IDatabase repository, 
-            IDownloadManager downloadManager, IDirectoryManager inputOutputManager) 
-            : base(input, data, tester, repository, downloadManager, inputOutputManager)
+        [Inject]
+        private IDatabase repository;
+
+        public PrintFilteredStudentsCommand(string input, string[] data) 
+            : base(input, data)
         {
         }
 
@@ -34,7 +38,7 @@ namespace SimpleSoftProject.IO.Commands
             {
                 if (takeQuantity == "all")
                 {
-                    this.Repository.FilterAndTake(courseName, filter);
+                    this.repository.FilterAndTake(courseName, filter);
                 }
                 else
                 {
@@ -42,7 +46,7 @@ namespace SimpleSoftProject.IO.Commands
                     bool hasParsed = int.TryParse(takeQuantity, out studentsToTake);
                     if (hasParsed)
                     {
-                        this.Repository.FilterAndTake(courseName, filter, studentsToTake);
+                        this.repository.FilterAndTake(courseName, filter, studentsToTake);
                     }
                     else
                     {

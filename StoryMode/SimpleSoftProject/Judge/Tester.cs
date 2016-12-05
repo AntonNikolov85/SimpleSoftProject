@@ -1,11 +1,11 @@
-﻿using System;
-using System.IO;
-using SimpleSoftProject.Contracts;
-using SimpleSoftProject.IO;
-using SimpleSoftProject.StaticData;
-
-namespace SimpleSoftProject.Judge
+﻿namespace SimpleSoftProject.Judge
 {
+    using IO;
+    using System;
+    using System.IO;
+    using Contracts;
+    using StaticData;
+
     public class Tester : IContentComparer
     {
         public void CompareContent(string userOutputPath, string expectedOutputPath)

@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-
-namespace SimpleSoftProject.StaticData
+﻿namespace SimpleSoftProject.StaticData
 {
+    using System.IO;
+    using System.Threading.Tasks;
+    using System.Collections.Generic;
+
     public static class SessionData
     {
         public static string currentPath = Directory.GetCurrentDirectory();

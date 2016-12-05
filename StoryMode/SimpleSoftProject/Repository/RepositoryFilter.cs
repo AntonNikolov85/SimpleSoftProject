@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using SimpleSoftProject.Contracts;
-using SimpleSoftProject.IO;
-using SimpleSoftProject.StaticData;
-
-namespace SimpleSoftProject.Repository
+﻿namespace SimpleSoftProject.Repository
 {
+    using IO;
+    using System;
+    using Contracts;
+    using StaticData;
+    using System.Collections.Generic;
+
     public class RepositoryFilter : IDataFilter
     {
         public void FilterAndTake(Dictionary<string, double> studentsWithMarks, string wantedFilter, int studentsToTake)

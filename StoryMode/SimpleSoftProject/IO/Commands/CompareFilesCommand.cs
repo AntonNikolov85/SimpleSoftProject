@@ -1,14 +1,17 @@
-﻿using SimpleSoftProject.Contracts;
-using SimpleSoftProject.Exceptions;
-
-
-namespace SimpleSoftProject.IO.Commands
+﻿namespace SimpleSoftProject.IO.Commands
 {
+    using Attributes;
+    using Contracts;
+    using Exceptions;
+
+    [Command("cmp")]
     public class CompareFilesCommand : Command
     {
-        public CompareFilesCommand(string input, string[] data, IContentComparer tester, IDatabase repository, 
-            IDownloadManager downloadManager, IDirectoryManager inputOutputManager) 
-            : base(input, data, tester, repository, downloadManager, inputOutputManager)
+        [Inject]
+        private IContentComparer tester;
+
+        public CompareFilesCommand(string input, string[] data) 
+            : base(input, data)
         {
         }
 
@@ -22,7 +25,7 @@ namespace SimpleSoftProject.IO.Commands
             string firstPath = this.Data[1];
             string secondPath = this.Data[2];
 
-            this.Tester.CompareContent(firstPath, secondPath);
+            this.tester.CompareContent(firstPath, secondPath);
         }
     }
 }

@@ -1,12 +1,11 @@
-﻿using System;
-using SimpleSoftProject.Contracts;
-using SimpleSoftProject.IO;
-using SimpleSoftProject.Judge;
-using SimpleSoftProject.Network;
-using SimpleSoftProject.Repository;
-
-namespace SimpleSoftProject
+﻿namespace SimpleSoftProject
 {
+    using IO;
+    using Judge;
+    using Network;
+    using Repository;
+    using Contracts;
+
     public class Startup
     {
         public static void Main(string[] args)

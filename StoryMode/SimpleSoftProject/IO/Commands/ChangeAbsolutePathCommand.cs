@@ -1,14 +1,17 @@
-﻿using SimpleSoftProject.Contracts;
-using SimpleSoftProject.Exceptions;
-
-
-namespace SimpleSoftProject.IO.Commands
+﻿namespace SimpleSoftProject.IO.Commands
 {
+    using Attributes;
+    using Contracts;
+    using Exceptions;
+
+    [Command("cdabs")]
     public class ChangeAbsolutePathCommand : Command
     {
-        public ChangeAbsolutePathCommand(string input, string[] data, IContentComparer tester, IDatabase repository, 
-            IDownloadManager downloadManager, IDirectoryManager inputOutputManager) 
-            : base(input, data, tester, repository, downloadManager, inputOutputManager)
+        [Inject]
+        private IDirectoryManager inputOutputManager;
+
+        public ChangeAbsolutePathCommand(string input, string[] data) 
+            : base(input, data)
         {
         }
 
@@ -20,7 +23,7 @@ namespace SimpleSoftProject.IO.Commands
             }
 
             string absolutePath = this.Data[1];
-            this.InputOutputManager.ChangeCurrentDirectoryAbsolute(absolutePath);
+            this.inputOutputManager.ChangeCurrentDirectoryAbsolute(absolutePath);
         }
     }
 }

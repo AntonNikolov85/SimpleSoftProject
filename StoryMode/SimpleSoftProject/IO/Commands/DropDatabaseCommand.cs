@@ -1,14 +1,17 @@
-﻿using SimpleSoftProject.Contracts;
-using SimpleSoftProject.Exceptions;
-
-
-namespace SimpleSoftProject.IO.Commands
+﻿namespace SimpleSoftProject.IO.Commands
 {
+    using Attributes;
+    using Contracts;
+    using Exceptions;
+
+    [Command("dropdb")]
     public class DropDatabaseCommand : Command
     {
-        public DropDatabaseCommand(string input, string[] data, IContentComparer tester, IDatabase repository, 
-            IDownloadManager downloadManager, IDirectoryManager inputOutputManager) 
-            : base(input, data, tester, repository, downloadManager, inputOutputManager)
+        [Inject]
+        private IDatabase repository;
+
+        public DropDatabaseCommand(string input, string[] data) 
+            : base(input, data)
         {
         }
 
@@ -19,7 +22,7 @@ namespace SimpleSoftProject.IO.Commands
                 throw new InvalidCommandException(this.Input);
             }
 
-            this.Repository.UnloadData();
+            this.repository.UnloadData();
             OutputWriter.WriteMessageOnNewLine("Database dropped!");
         }
     }

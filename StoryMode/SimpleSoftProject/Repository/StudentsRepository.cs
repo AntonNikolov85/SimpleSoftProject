@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.RegularExpressions;
-using SimpleSoftProject.IO;
-using SimpleSoftProject.Models;
-using SimpleSoftProject.StaticData;
-using System.Linq;
-using SimpleSoftProject.Contracts;
-using SimpleSoftProject.DataStructures;
-using SimpleSoftProject.Exceptions;
-
-namespace SimpleSoftProject.Repository
+﻿namespace SimpleSoftProject.Repository
 {
+    using IO;
+    using Models;
+    using System;
+    using System.IO;
+    using StaticData;
+    using System.Linq;
+    using Contracts;
+    using DataStructures;
+    using Exceptions;
+    using System.Text.RegularExpressions;
+    using System.Collections.Generic;
+
     public class StudentsRepository : IDatabase
     {
         private bool isDataInitialized;

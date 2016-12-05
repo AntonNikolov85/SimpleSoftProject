@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace SimpleSoftProject.Exceptions
+﻿namespace SimpleSoftProject.Exceptions
 {
+    using System;
+
     public class InvalidFileNameException : Exception
     {
         private const string ForbiddenSymbolsContainedInName = "The given name contains symbols that" +

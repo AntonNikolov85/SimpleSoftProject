@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using SimpleSoftProject.Contracts;
-using SimpleSoftProject.Exceptions;
-using SimpleSoftProject.StaticData;
-
-namespace SimpleSoftProject.Models
+﻿namespace SimpleSoftProject.Models
 {
+    using System;
+    using System.Linq;
+    using Contracts;
+    using Exceptions;
+    using StaticData;
+    using System.Collections.Generic;
+
     public class UniversityStudent : Student
     {
         private string userName;

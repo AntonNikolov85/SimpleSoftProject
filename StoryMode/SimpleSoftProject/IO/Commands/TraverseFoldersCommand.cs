@@ -1,13 +1,17 @@
-﻿using SimpleSoftProject.Contracts;
-using SimpleSoftProject.Exceptions;
-
-namespace SimpleSoftProject.IO.Commands
+﻿namespace SimpleSoftProject.IO.Commands
 {
+    using Attributes;
+    using Contracts;
+    using Exceptions;
+
+    [Command("ls")]
     public class TraverseFoldersCommand : Command
     {
-        public TraverseFoldersCommand(string input, string[] data, IContentComparer tester, IDatabase repository, 
-            IDownloadManager downloadManager, IDirectoryManager inputOutputManager) 
-            : base(input, data, tester, repository, downloadManager, inputOutputManager)
+        [Inject]
+        private IDirectoryManager inputOutputManager;
+
+        public TraverseFoldersCommand(string input, string[] data) 
+            : base(input, data)
         {
         }
 
@@ -15,7 +19,7 @@ namespace SimpleSoftProject.IO.Commands
         {
             if (this.Data.Length == 1)
             {
-                this.InputOutputManager.TraverseDirectory(0);
+                this.inputOutputManager.TraverseDirectory(0);
             }
             else if (this.Data.Length == 2)
             {
@@ -23,7 +27,7 @@ namespace SimpleSoftProject.IO.Commands
                 bool hasParsed = int.TryParse(this.Data[1], out depth);
                 if (hasParsed)
                 {
-                    this.InputOutputManager.TraverseDirectory(depth);
+                    this.inputOutputManager.TraverseDirectory(depth);
                 }
                 else
                 {

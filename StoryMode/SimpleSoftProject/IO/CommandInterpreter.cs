@@ -1,11 +1,13 @@
-﻿using System;
-using System.IO;
-using SimpleSoftProject.Contracts;
-using SimpleSoftProject.Exceptions;
-using SimpleSoftProject.IO.Commands;
-
-namespace SimpleSoftProject.IO
+﻿namespace SimpleSoftProject.IO
 {
+    using System;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
+    using Attributes;
+    using Contracts;
+    using Commands;
+
     public class CommandInterpreter : IInterpreter
     {
         private IContentComparer judge;
@@ -51,55 +53,35 @@ namespace SimpleSoftProject.IO
 
         private IExecutable ParseCommand(string input, string command, string[] data)
         {
-            switch (command)
+            object[] parametersForConstruction = new object[] {input, data};
+
+            var typeOfCommand = Assembly
+                .GetExecutingAssembly()
+                .GetTypes()
+                .First(t => t.GetCustomAttributes(typeof(CommandAttribute))
+                    .Where(a => a.Equals(command))
+                    .ToArray().Length > 0);
+
+            var typeOfInterpreter = typeof(CommandInterpreter);
+
+            Command cmd = (Command)Activator.CreateInstance(typeOfCommand, parametersForConstruction);
+
+            FieldInfo[] fieldsOfCommand = typeOfCommand.GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo[] fieldsofInterpreter = typeOfInterpreter.GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
+
+            foreach (var fieldOfCommand in fieldsOfCommand)
             {
-                case "display":
-                    return new DisplayCommand(input, data, this.judge, this.repository,
-                        this.downloadManager, this.inputOutputManager);
-                case "show":
-                    return new ShowCourseCommand(input, data, this.judge, this.repository,
-                        this.downloadManager, this.inputOutputManager);
-                case "open":
-                    return new OpenFileCommand(input, data, this.judge, this.repository,
-                        this.downloadManager, this.inputOutputManager);
-                case "mkdir":
-                    return new MakeDirectoryCommand(input, data, this.judge, this.repository,
-                        this.downloadManager, this.inputOutputManager);
-                case "ls":
-                    return new TraverseFoldersCommand(input, data, this.judge, this.repository,
-                        this.downloadManager, this.inputOutputManager);
-                case "cmp":
-                    return new CompareFilesCommand(input, data, this.judge, this.repository,
-                        this.downloadManager, this.inputOutputManager);
-                case "cdrel":
-                    return new ChangeRelativePathCommand(input, data, this.judge, this.repository,
-                        this.downloadManager, this.inputOutputManager);
-                case "cdabs":
-                    return new ChangeAbsolutePathCommand(input, data, this.judge, this.repository,
-                        this.downloadManager, this.inputOutputManager);
-                case "readdb":
-                    return new ReadDatabaseCommand(input, data, this.judge, this.repository,
-                        this.downloadManager, this.inputOutputManager);
-                case "help":
-                    return new GetHelpCommand(input, data, this.judge, this.repository,
-                        this.downloadManager, this.inputOutputManager);
-                case "filter":
-                    return new PrintFilteredStudentsCommand(input, data, this.judge, this.repository,
-                        this.downloadManager, this.inputOutputManager);
-                case "order":
-                    return new PrintOrderedStudentsCommand(input, data, this.judge, this.repository, this.downloadManager, this.inputOutputManager);
-                case "download":
-                    return new DownloadFileCommand(input, data, this.judge, this.repository,
-                        this.downloadManager, this.inputOutputManager);
-                case "downloadasynch":
-                    return new DownloadAsynchCommand(input, data, this.judge, this.repository,
-                        this.downloadManager, this.inputOutputManager);
-                case "dropdb":
-                    return new DropDatabaseCommand(input, data, this.judge, this.repository,
-                        this.downloadManager, this.inputOutputManager);
-                default:
-                    throw new InvalidCommandException(input);
+                var atr = fieldOfCommand.GetCustomAttribute(typeof(InjectAttribute));
+                if (atr != null)
+                {
+                    if (fieldsofInterpreter.Any(x => x.FieldType == fieldOfCommand.FieldType))
+                    {
+                        fieldOfCommand.SetValue(cmd, fieldsofInterpreter.First(x => x.FieldType == fieldOfCommand.FieldType).GetValue(this));
+                    }
+                }
             }
+
+            return cmd;
         }
     }
 }
